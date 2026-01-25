@@ -23,7 +23,7 @@ Students, renters, and privacy-conscious users often want **basic security and a
 We built a **camera-free smart home system** that detects **behavior instead of recording people** by combining:
 
 - WiFi-based presence detection
-- Sound classification
+- Sound activity detection
 - Motion sensing
 - Physical door interaction
 - Mechanical locking and visual/audio alerts
@@ -63,122 +63,73 @@ It allows multiple devices to share a single communication bus using only four l
 - SDA (Serial Data)
 - SCL (Serial Clock)
 
-Standardized connectors eliminate manual wiring and reduce hardware errors.
-
 ---
 
 ### Why We Used QWIIC
-QWIIC was chosen to:
-- Simplify wiring for multiple sensors
-- Enable rapid prototyping
-- Support modular expansion
-- Maintain a clean and scalable hardware layout
-
-Because the project required multiple sensors working simultaneously, QWIIC was essential for reliable integration.
-
----
-
-### I2C Communication Model
-The system follows a **master–slave architecture**:
-- The **Arduino Uno Q** acts as the I2C master
-- Each QWIIC module acts as a slave device
-- Each device has a **unique I2C address**
-
-The master communicates by polling devices individually over the shared bus.
+QWIIC was chosen to simplify wiring, enable rapid prototyping, and support modular expansion while maintaining a clean hardware layout.
 
 ---
 
 ### QWIIC Daisy-Chaining
-QWIIC modules can be **daisy-chained**, meaning devices are connected sequentially while sharing the same bus.
-
-In this project:
-- Motion sensor and buzzer were connected via daisy-chaining
-- All devices shared SDA, SCL, power, and ground
-- Devices were differentiated by I2C address only
-
-This significantly reduced wiring complexity and allowed easy system expansion.
-
----
-
-### Challenges & Debugging
-QWIIC integration was one of the most challenging aspects of the project and required **2–3 hours of troubleshooting**.
-
-Challenges included:
-- Limited documentation for Uno Q QWIIC behavior
-- Library incompatibility outside Arduino App Lab
-- Silent I2C bus failures caused by address conflicts or power issues
-
-Debugging steps:
-- Testing each device individually
-- Scanning for active I2C addresses
-- Incrementally rebuilding the daisy chain
-- Verifying power delivery across the bus
+QWIIC devices are connected in a **daisy-chain configuration**, sharing SDA, SCL, power, and ground while remaining distinguishable through unique I2C addresses.
 
 ---
 
 ## Sensor & Actuator Integration
 
 ### Servo Motor – Door Lock System
-A servo motor was used to implement a **mechanical door lock**.
-
-- Built using a wooden plank as a physical latch
-- Servo rotates to lock or unlock the door
-- Controlled automatically based on system state
-
-This adds real physical actuation to the system.
+A servo motor implements a **mechanical door lock**, automatically locking or unlocking based on system state.
 
 ---
 
 ### Sound Sensor (v1.6)
-A **v1.6 sound sensor** was used and fine-tuned to classify sound levels.
+The sound sensor is used to determine whether the owner is **actively present or inactive**.
 
-Sound detection is used to:
-- Distinguish between **Active** and **Sleep** states
-- Assist intrusion detection when the owner is away
+Sound activity:
+- Keeps the system in **Active**
+- Prevents accidental transition into **Sleep**
 
 ---
 
 ### WiFi Presence Detection
-The Arduino was configured as a **WiFi access point**.
+WiFi connectivity is used as a **presence signal**:
+- Connected → owner is assumed present
+- Disconnected → owner may have left
 
-- When a known device connects → owner is assumed present
-- Enables presence detection without cameras
+WiFi alone does **not** imply the owner is awake.
 
 ---
 
 ### Motion Sensor & Buzzer (QWIIC)
-- Motion sensor detects movement inside the house
-- Buzzer provides an audible alarm during intrusion events
+- Motion sensor detects movement
+- Buzzer signals confirmed intrusion events
 
 ---
 
 ### LEDs – Visual Security Feedback
-RGB LEDs provide visual feedback:
-- Normal lighting during **Active** and **Sleep**
+RGB LEDs provide:
+- Normal lighting during Active and Sleep
 - **Red alert lighting during Intrusion**
 
 ---
 
 ## Physical Design & Construction
 
-A **doll-house-style structure** was built with:
-- Hinged door
-- Internal sensor mounting
-- Compact wiring layout
-
-Door movement is a critical logical input for state transitions.
+A **doll-house-style structure** was built with a hinged door and internal sensor mounting.  
+Door movement is a key signal for determining system state.
 
 ---
 
 ## System Logic – State Machine
 
-The system is implemented as a **deterministic finite state machine** and **always starts in Active mode**.
+The system operates as a **deterministic finite state machine** and **always starts in Active mode**.
 
 ### Design Assumptions
-- The owner makes noise before reaching the door
-- Noise alone during sleep is normal
+- The owner must make noise to be considered awake
+- WiFi alone does not imply activity
+- Noise precedes door interaction
 - Door movement while asleep is suspicious
-- The system can only be armed (**Away**) from **Active** mode
+- The system can only be armed (**Away**) from **Active**
 
 ---
 
@@ -186,9 +137,9 @@ The system is implemented as a **deterministic finite state machine** and **alwa
 
 | State | Entry Conditions | Behavior / Actions |
 |------|------------------|--------------------|
-| **Active** | System startup<br>OR WiFi connection recovered<br>OR sound activity detected | Door unlocked<br>Normal operation<br>No alarm |
-| **Sleep** | In **Active** state<br>No sound detected for a period | Door locks<br>Low-power monitoring |
-| **Away** | In **Active** state<br>Door moved<br>AND WiFi OFF | Door locks<br>Alarm armed (standby) |
+| **Active** | System startup<br>WiFi connected<br>AND sound activity detected | Door unlocked<br>Normal operation<br>No alarm |
+| **Sleep** | WiFi connected<br>AND no sound detected for a period | Door locks<br>Low-power monitoring |
+| **Away** | In **Active** state<br>Door moved<br>AND WiFi disconnected | Door locks<br>Alarm armed (standby) |
 | **Intrusion** | In **Away** state AND sound OR door movement detected<br><br>OR<br><br>In **Sleep** state AND door movement detected | Buzzer ON<br>Red LEDs ON<br>Door remains locked |
 
 ---
@@ -196,16 +147,15 @@ The system is implemented as a **deterministic finite state machine** and **alwa
 ### State Transition Rules
 
 - The system **always starts in Active**
-- **Active** represents the owner being present and awake, inferred through sound activity
-- **Sleep** can only be entered from **Active**
+- **Active requires BOTH WiFi connection and recent sound activity**
+- If WiFi is connected but sound stops → transition to **Sleep**
+- **Sleep** can only transition back to **Active** when sound resumes
 - **Away** can only be entered from **Active**
-- **Sleep → Active** occurs when sound is detected or WiFi reconnects
 - **Sleep → Intrusion** occurs **only** if door movement is detected
-- **Away → Active** occurs when WiFi reconnects
 - **Away → Intrusion** occurs if sound or door movement is detected while WiFi is OFF
 - Both **Sleep** and **Away** lock the door
 
-This logic minimizes false alarms while maintaining strong intrusion detection.
+This logic reduces false alarms while maintaining strong intrusion detection.
 
 ---
 
@@ -219,14 +169,14 @@ This logic minimizes false alarms while maintaining strong intrusion detection.
 - Deterministic state-machine logic
 
 ### In Progress
-- Refining sound sensitivity
+- Refining sound detection timing
 - Reducing false positives
 - Exploring TinyML for sound classification
 
 ---
 
 ## Conclusion
-This project demonstrates a **privacy-first, hardware-centric smart home system** that prioritizes correctness, reliability, and real-world behavior modeling.
+This project demonstrates a **privacy-first, hardware-centric smart home system** that models real human behavior rather than relying on cameras or cloud services.
 
-By using a carefully designed state machine, the system avoids false alarms while maintaining effective intrusion detection without relying on cameras or cloud services.
+By requiring both **WiFi presence and sound activity** for Active state, the system accurately distinguishes between awake, asleep, away, and intrusion scenarios while minimizing false alarms.
 
