@@ -116,12 +116,6 @@ Debugging steps:
 
 ---
 
-### Importance to System Design
-QWIIC is a **core architectural component**, not a convenience feature.  
-It enables modular sensor input that directly feeds the system’s **state-machine logic** and allows scalable expansion.
-
----
-
 ## Sensor & Actuator Integration
 
 ### Servo Motor – Door Lock System
@@ -136,16 +130,11 @@ This adds real physical actuation to the system.
 ---
 
 ### Sound Sensor (v1.6)
-A **v1.6 sound sensor** was used and fine-tuned to classify sound levels:
-
-- No noise
-- Low noise
-- Active noise
-- Loud noise
+A **v1.6 sound sensor** was used and fine-tuned to classify sound levels.
 
 Sound detection is used to:
-- Determine activity vs inactivity
-- Detect intrusions when WiFi presence is absent
+- Distinguish between **Active** and **Sleep** states
+- Assist intrusion detection when the owner is away
 
 ---
 
@@ -153,70 +142,70 @@ Sound detection is used to:
 The Arduino was configured as a **WiFi access point**.
 
 - When a known device connects → owner is assumed present
-- Can be extended to recognize frequent users
 - Enables presence detection without cameras
 
 ---
 
 ### Motion Sensor & Buzzer (QWIIC)
 - Motion sensor detects movement inside the house
-- Buzzer provides an audible alarm
-- Both devices operate over the QWIIC bus
-
-These components are critical for intrusion detection.
+- Buzzer provides an audible alarm during intrusion events
 
 ---
 
 ### LEDs – Visual Security Feedback
-LEDs were soldered manually to:
-- Provide visual feedback
-- Turn the room **red during intrusion events**
-
-This introduced hands-on soldering and permanent circuit design.
-
-⚠️ Lighting logic is still being expanded.
+RGB LEDs provide visual feedback:
+- Normal lighting during **Active** and **Sleep**
+- **Red alert lighting during Intrusion**
 
 ---
 
 ## Physical Design & Construction
 
-### Smart House Model
-A **doll-house-style structure** was designed and built.
-
-Features include:
+A **doll-house-style structure** was built with:
 - Hinged door
-- Movable door for interaction detection
-- Internal mounting for sensors and wiring
+- Internal sensor mounting
+- Compact wiring layout
 
-Door movement is used as a logical signal to infer entry and exit.
+Door movement is a critical logical input for state transitions.
 
 ---
 
 ## System Logic – State Machine
 
-The system is controlled using a **state machine** that evaluates multiple sensor inputs simultaneously.
+The system is implemented as a **deterministic finite state machine** and **always starts in Active mode**.
 
-### System States
-
-| State | Conditions | Actions |
-|------|-----------|---------|
-| **Active** | WiFi ON<br>Sound activity detected<br>No door movement | Normal operation |
-| **Asleep** | WiFi ON<br>No sound activity<br>No door movement | Door locks |
-| **Away** | WiFi OFF<br>Door moved | Door locks<br>Alarm on standby |
+### Design Assumptions
+- The owner makes noise before reaching the door
+- Noise alone during sleep is normal
+- Door movement while asleep is suspicious
+- The system can only be armed (**Away**) from **Active** mode
 
 ---
 
-### Intrusion Detection Logic
-If:
-- Sound or motion is detected
-- AND WiFi is OFF
+### System States
 
-Then:
-- Intruder is assumed
-- Buzzer alarm activates
-- LEDs turn red
+| State | Entry Conditions | Behavior / Actions |
+|------|------------------|--------------------|
+| **Active** | System startup<br>OR WiFi connection recovered<br>OR sound activity detected | Door unlocked<br>Normal operation<br>No alarm |
+| **Sleep** | In **Active** state<br>No sound detected for a period | Door locks<br>Low-power monitoring |
+| **Away** | In **Active** state<br>Door moved<br>AND WiFi OFF | Door locks<br>Alarm armed (standby) |
+| **Intrusion** | In **Away** state AND sound OR door movement detected<br><br>OR<br><br>In **Sleep** state AND door movement detected | Buzzer ON<br>Red LEDs ON<br>Door remains locked |
 
-This provides both audible and visual alerts.
+---
+
+### State Transition Rules
+
+- The system **always starts in Active**
+- **Active** represents the owner being present and awake, inferred through sound activity
+- **Sleep** can only be entered from **Active**
+- **Away** can only be entered from **Active**
+- **Sleep → Active** occurs when sound is detected or WiFi reconnects
+- **Sleep → Intrusion** occurs **only** if door movement is detected
+- **Away → Active** occurs when WiFi reconnects
+- **Away → Intrusion** occurs if sound or door movement is detected while WiFi is OFF
+- Both **Sleep** and **Away** lock the door
+
+This logic minimizes false alarms while maintaining strong intrusion detection.
 
 ---
 
@@ -227,20 +216,17 @@ This provides both audible and visual alerts.
 - QWIIC daisy-chaining
 - WiFi presence detection
 - Mechanical door lock
-- State-machine control logic
+- Deterministic state-machine logic
 
 ### In Progress
-- Finalizing LED lighting logic
-- Refining sensor thresholds
-- Improving state transitions
-- Expanding alarm behavior
+- Refining sound sensitivity
+- Reducing false positives
+- Exploring TinyML for sound classification
 
 ---
 
 ## Conclusion
-This project combines **embedded software, hardware integration, and physical design** to create a functional, privacy-first smart home prototype.
+This project demonstrates a **privacy-first, hardware-centric smart home system** that prioritizes correctness, reliability, and real-world behavior modeling.
 
-Despite significant challenges—particularly around QWIIC and development environment constraints—the system successfully demonstrates **robust hardware–software integration**, modular architecture, and real-world security logic.
-
----
+By using a carefully designed state machine, the system avoids false alarms while maintaining effective intrusion detection without relying on cameras or cloud services.
 
