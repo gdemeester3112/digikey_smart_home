@@ -38,8 +38,9 @@ The image below shows the **current assembled state of the smart house**, includ
 
 This represents the **state of the system at the time of submission**.
 
-📷 *Fully assembled smart house prototype:*
-![House](https://github.com/user-attachments/assets/5c3b868f-5603-4df5-91a1-caa0ab2ed1fc)
+📷 *Fully assembled smart house prototype:*  
+![Current System State](House.jpg)
+
 ---
 
 ## Getting Started with Arduino App Lab
@@ -82,9 +83,8 @@ These hinges:
 - Improve mechanical robustness
 - Support accurate state transitions
 
-📷 *3D-printed hinge mechanism installed on the house door:*
-![DoorHinges](https://github.com/user-attachments/assets/bbcb9706-3569-4539-9a50-679a44565187)
-
+📷 *3D-printed hinge mechanism installed on the house door:*  
+![3D Printed Door Hinges](DoorHinges.jpg)
 
 ---
 
@@ -98,7 +98,7 @@ Steps taken:
 - Ensured wires did not interfere with door movement
 
 📷 *Internal wire routing and organization:*  
-![WireManagement](https://github.com/user-attachments/assets/1b7f3bbf-2db0-49c9-94b0-240e55ef6448)
+![Wire Management](WireManagement.jpg)
 
 ---
 
@@ -110,9 +110,8 @@ Soldering enabled:
 - Strong red alert lighting during intrusion
 - Reduced intermittent connection issues
 
-📷 *Soldered RGB LED connections:*
-![soldering](https://github.com/user-attachments/assets/48ad4ee5-1808-4afc-b8a1-b05c8aca7261)
-
+📷 *Soldered RGB LED connections:*  
+![LED Soldering](soldering.jpg)
 
 ---
 
@@ -171,7 +170,8 @@ The system operates as a **deterministic finite state machine** and **always sta
 
 ### State Machine Diagram
 The diagram below illustrates all system states and transitions:
-![StateMachine](https://github.com/user-attachment
+
+![State Machine Diagram](StateMachine.jpg)
 
 ---
 
