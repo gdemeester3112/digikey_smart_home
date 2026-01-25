@@ -39,7 +39,7 @@ The image below shows the **current assembled state of the smart house**, includ
 This represents the **state of the system at the time of submission**.
 
 📷 *Fully assembled smart house prototype:*  
-![Current System State](House.jpg)
+![Current System State](https://raw.githubusercontent.com/gdemeester3112/digikey_smart_home/main/House.jpg)
 
 ---
 
@@ -84,7 +84,7 @@ These hinges:
 - Support accurate state transitions
 
 📷 *3D-printed hinge mechanism installed on the house door:*  
-![3D Printed Door Hinges](DoorHinges.jpg)
+![3D Printed Door Hinges](https://raw.githubusercontent.com/gdemeester3112/digikey_smart_home/main/DoorHinges.jpg)
 
 ---
 
@@ -98,7 +98,7 @@ Steps taken:
 - Ensured wires did not interfere with door movement
 
 📷 *Internal wire routing and organization:*  
-![Wire Management](WireManagement.jpg)
+![Wire Management](https://raw.githubusercontent.com/gdemeester3112/digikey_smart_home/main/WireManagement.jpg)
 
 ---
 
@@ -111,7 +111,7 @@ Soldering enabled:
 - Reduced intermittent connection issues
 
 📷 *Soldered RGB LED connections:*  
-![LED Soldering](soldering.jpg)
+![LED Soldering](https://raw.githubusercontent.com/gdemeester3112/digikey_smart_home/main/soldering.jpg)
 
 ---
 
@@ -171,7 +171,7 @@ The system operates as a **deterministic finite state machine** and **always sta
 ### State Machine Diagram
 The diagram below illustrates all system states and transitions:
 
-![State Machine Diagram](StateMachine.jpg)
+![State Machine Diagram](https://raw.githubusercontent.com/gdemeester3112/digikey_smart_home/main/StateMachine.jpg)
 
 ---
 
@@ -215,4 +215,4 @@ The diagram below illustrates all system states and transitions:
 ## Conclusion
 This project demonstrates a **privacy-first, hardware-centric smart home system** that combines embedded software, mechanical design, and physical fabrication.
 
-By modeling real human behavior and using a deterministic state machine, the system avoids false alarms while providing effective intrusion detection—without relying on cameras or cloud services.
+By modeling real human behavior and using a deterministic state machine, the system avoids false alarms while providing effective intr
