@@ -38,8 +38,9 @@ The image below shows the **current assembled state of the smart house**, includ
 
 This represents the **state of the system at the time of submission**.
 
-📷 *Fully assembled smart house prototype:*  
-![Current System State](House.jpg)
+📷 *Fully assembled smart house prototype:* 
+[House.pdf](https://github.com/user-attachments/files/24845722/House.pdf)
+
 
 ---
 
