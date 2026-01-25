@@ -215,4 +215,4 @@ The diagram below illustrates all system states and transitions:
 ## Conclusion
 This project demonstrates a **privacy-first, hardware-centric smart home system** that combines embedded software, mechanical design, and physical fabrication.
 
-By modeling real human behavior and using a deterministic state machine, the system avoids false alarms while providing effective intr
+By modeling real human behavior and using a deterministic state machine, the system avoids false alarms while providing effective intrusion detection—without relying on cameras or cloud services.
