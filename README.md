@@ -2,7 +2,7 @@
 
 ## Project Overview
 The DigiKey Smart Home project is a small-scale physical smart house built using **Arduino Uno Q**, multiple sensors, QWIIC modules, and WiFi functionality.  
-The goal was to explore **embedded systems, sensor integration, I2C (QWIIC), state machines, and physical prototyping**, while designing a functional smart-home logic system capable of detecting presence, inactivity, and intrusions.
+The goal was to explore **embedded systems, sensor integration, I2C (QWIIC), state machines, and physical prototyping**, while designing a functional smart-home logic system capable of human states such as active, asleep, away and intrusions.
 
 This document describes the **process**, **technical challenges**, and **current system behavior**.
 
