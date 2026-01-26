@@ -39,7 +39,7 @@ The image below shows the **current assembled state of the smart house**, includ
 This represents the **state of the system at the time of submission**.
 
 📷 *Fully assembled smart house prototype:*  
-![Current System State](https://raw.githubusercontent.com/gdemeester3112/digikey_smart_home/main/House.png)
+![Current System State](https://raw.githubusercontent.com/gdemeester3112/digikey_smart_home/main/assets/images/House.png)
 
 ---
 
