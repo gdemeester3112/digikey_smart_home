@@ -40,7 +40,6 @@ This represents the **state of the system at the time of submission**.
 
 📷 *Fully assembled smart house prototype:*  
 ![Current System State](assets/images/House.png)
-
 ---
 
 ## Getting Started with Arduino App Lab
